@@ -81,6 +81,18 @@ order screen round in different places.
 
 **Time:** about 20 minutes, most of it finding that the expiry check was missing from pricing.js while the coupons list route had one.
 
+## CC-10: "Sorting by price is backwards"
+
+**Reproduced:** On the Menu page I picked "Price: low to high" from the sort dropdown. The cheapest dishes were at the bottom of the list instead of the top. "Price: high to low" was reversed the same way.
+
+**Cause:** In the SORTERS object in backend/logic/search.js, the comparators for price-asc and price-desc were swapped. price-asc used b.price - a.price (high to low) and price-desc used a.price - b.price (low to high). The dropdown values in index.html were correct.
+
+**Fix:** I swapped the two comparators so price-asc is a.price - b.price and price-desc is b.price - a.price. I fixed it in SORTERS because the menu route uses it for every price sort, so the frontend needed no change.
+
+**Checked:** Low to high now starts with the cheapest dish and high to low starts with the most expensive. The sort checks in backend/smoke.js pass, including "sort by price works", which failed before the fix.
+
+**Time:** about 10 minutes, mostly spent looking for where sorting happens before spotting that the two comparators were just swapped.
+
 ## Could not fix
 
 For anything you investigated but did not solve. Say what you tried and
