@@ -93,6 +93,19 @@ order screen round in different places.
 
 **Time:** about 10 minutes, mostly spent looking for where sorting happens before spotting that the two comparators were just swapped.
 
+
+## CC-09: "The menu shows more dishes than it should"
+
+**Reproduced:** I opened the Menu and scrolled to the bottom. More dishes loaded automatically and same dish appeared more than once. The "Showing" number in the header kept growing past the real total of 37 (I saw 74 on the first look). The smoke test check "pages differ" also failed.
+
+**Cause:** In paginate in backend/logic/search.js, the page slice was calculated correctly but the function returned items: list, the full list, instead of the slice. Every page request therefore returned all dishes. total and hasMore were still right, which hid the problem.
+
+**Fix:** I changed items: list to items so the function returns only the current page. I fixed it in paginate because every menu request goes through it, so no frontend change was needed.
+
+**Checked:** The menu now loads 5 dishes at a time with no repeats, and "Showing" stops at 37. The smoke test check "pages differ" now passes.
+
+**Time:** about 25 minutes, mostly spent working out whether the fault was in the frontend scroll loading or the backend, before seeing that paginate returned the whole list.
+
 ## Could not fix
 
 For anything you investigated but did not solve. Say what you tried and
