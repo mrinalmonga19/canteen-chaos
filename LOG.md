@@ -96,7 +96,7 @@ order screen round in different places.
 
 ## CC-09: "The menu shows more dishes than it should"
 
-**Reproduced:** I opened the Menu and scrolled to the bottom. More dishes loaded automatically and same dish appeared more than once. The "Showing" number in the header kept growing past the real total of 37 (I saw 74 on the first look). The smoke test check "pages differ" also failed.
+**Reproduced:** I opened the Menu and scrolled to the bottom. More dishes loaded automatically and same dish appeared more than once. The "Showing" number in the header kept growing past the real total of 37 (I saw 74 on the first look).
 
 **Cause:** In paginate in backend/logic/search.js, the page slice was calculated correctly but the function returned items: list, the full list, instead of the slice. Every page request therefore returned all dishes. total and hasMore were still right, which hid the problem.
 
@@ -105,6 +105,16 @@ order screen round in different places.
 **Checked:** The menu now loads 5 dishes at a time with no repeats, and "Showing" stops at 37. The smoke test check "pages differ" now passes.
 
 **Time:** about 25 minutes, mostly spent working out whether the fault was in the frontend scroll loading or the backend, before seeing that paginate returned the whole list.
+
+## CC-01 : "The search suggestions are behind everything"
+
+**Reproduced:** I start typing a dish name and the list of suggestions comes up, but it's stuck behind the rest of the page. I can only click the very top bit of it.
+
+**Cause:** The z-index of search bar is lower than the panel below it, so it is shown behind the panel
+
+**Fix:** I just increased the z-index of a function of the search bar to a distinguishable number of 50, therefore, it doesn't clashes with any other function's z-index
+
+**Time:** less than 10 minutes, mostly finding the point of source of error
 
 ## Could not fix
 
