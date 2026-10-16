@@ -57,7 +57,7 @@ order screen round in different places.
 
 **Time:** Around 15 mins, mostly of it locating the exact place of code execution and then simply writing a line of code.
 
-## CC-07: Cancelling an order lowers stock instead of restoring it
+## CC-07: "Cancelling makes it worse"
 
 **Reproduced:** I ordered 4 Cold Coffee when stock was 25, which correctly dropped it to 21. Then I cancelled the order from My Orders. Stock went down to 17 instead of back up to 25.
 
@@ -68,6 +68,18 @@ order screen round in different places.
 **Checked:** Ordered 4 Cold Coffee (25 to 21), cancelled it, and stock returned to 25.
 
 **Time:** about 10 minutes, mostly spent on the reproduction, since the cause was obvious once I read releaseStock.
+
+## CC-08: "An old coupon still works"
+
+**Reproduced:** I added Chicken Manchurian worth Rs. 119.50 to the cart and applied FRESHERS24, whose expiry date is 30 Sept 2024 and whose description says it is expired. The cart took Rs. 30 off and the total came to Rs. 99.23.
+
+**Cause:** applyCoupon in backend/logic/pricing.js never checked the coupon's expiresAt date. It only checked that the coupon exists, has uses left, and meets the minimum order, veg and slot rules. The coupons route hid expired coupons from the public list, but a code typed in by hand skipped that filter.
+
+**Fix:** I added an expiry check inside applyCoupon, right after the uses-left check, so it rejects any coupon whose expiresAt is in the past. I fixed it there because both the cart quote and order placement go through applyCoupon, so one check covers both.
+
+**Checked:** FRESHERS24 is now rejected with "This coupon has expired" and no discount. BYTE10 on the same cart still applies its discount.
+
+**Time:** about 20 minutes, most of it finding that the expiry check was missing from pricing.js while the coupons list route had one.
 
 ## Could not fix
 
