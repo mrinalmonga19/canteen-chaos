@@ -192,7 +192,7 @@
     "category": "Lunch",
     "slot": "lunch",
     "image": "img/dish-5.jpg",
-    "stock": 3,
+    "stock": -1,
     "prepMinutes": 8,
     "spicy": true,
     "rating": 4.5,

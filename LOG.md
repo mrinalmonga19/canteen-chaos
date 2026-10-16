@@ -45,6 +45,18 @@ order screen round in different places.
 
 **Time:**
 
+## CC-06: "I ordered more than they had"
+
+**Reproduced:** The counter said onyly 3 Dal Tadka were left but it let me order 4 Dal Tadka Thali at Rs. 73 each, and the order went through fine.
+
+**Cause:** In validateLine in backend/logic/validation.js, the stock check only rejected dishes with zero stock or less. It never compared the quantity ordered against the stock left.
+
+**Fix:** I added a check that rejects a line when qty is greater than the dish's stock, with a message saying how many are left. I put it in validateLine because that is where every order line is validated, so the rule applies no matter which screen the order comes from.
+
+**Checked:** At checkout a message showing the current stock of item and the quantity asked for is displayed at the bottom.
+
+**Time:** Around 15 mins, mostly of it locating the exact place of code execution and then simply writing a line of code.
+
 
 
 ## Could not fix
