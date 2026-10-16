@@ -57,7 +57,17 @@ order screen round in different places.
 
 **Time:** Around 15 mins, mostly of it locating the exact place of code execution and then simply writing a line of code.
 
+## CC-07: Cancelling an order lowers stock instead of restoring it
 
+**Reproduced:** I ordered 4 Cold Coffee when stock was 25, which correctly dropped it to 21. Then I cancelled the order from My Orders. Stock went down to 17 instead of back up to 25.
+
+**Cause:** releaseStock in backend/logic/validation.js did dish.stock - line.qty. It subtracted the cancelled quantity a second time instead of adding it back.
+
+**Fix:** I changed the minus to a plus. I fixed it in releaseStock because the cancel route calls it for every cancellation, so one change covers all orders.
+
+**Checked:** Ordered 4 Cold Coffee (25 to 21), cancelled it, and stock returned to 25.
+
+**Time:** about 10 minutes, mostly spent on the reproduction, since the cause was obvious once I read releaseStock.
 
 ## Could not fix
 
