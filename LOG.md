@@ -80,3 +80,13 @@ stuck is not.
 Anything not on the bug log: a problem you found yourself, a test you
 wrote, or a fix you are unsure about. Same format, plus one line on how
 you noticed it.
+
+**How I noticed it:** I placed an order, got the confirmation, then opened My Orders and it said "No orders found". The browser still had the order token saved, so the order existed.
+
+**Cause:** In GET /api/orders in backend/routes/orders.routes.js, the member filter checked req.query.userId, but the frontend sends memberId. The comparison was always against undefined, so every order was filtered out.
+
+**Fix:** I changed req.query.userId to req.query.memberId.
+
+**Checked:** After a fresh order, My Orders lists it. Orders that I placed earlier were also visible.
+
+**Time:** about 25 minutes, most of it reading the frontend and backend code side by side to see that the page asked for memberId while the server filtered on userId.
